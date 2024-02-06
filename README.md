@@ -1,6 +1,12 @@
 # egcl
 
-A simple program to compute an unitary fraction expansion of a given fraction.
+Currently a lisp library that computes as the egyptians did.
+
+## Implemented operations
+
+- Division
+- Multiplication
+- Factorization of unit fractions
 
 Rewrite of [egc](https://github.com/cpmachado/egc) in Common Lisp.
 

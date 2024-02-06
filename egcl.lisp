@@ -3,6 +3,10 @@
   (:export :multiplication :division :factor-unit-fractions))
 (in-package :egcl)
 
+(defun naturalp (n)
+  "Predicate to verify if it's a natural number"
+  (and (integerp n) (> n 0)))
+
 
 (defun double (n p)
   (loop for i = 1 then (* i 2)
@@ -22,29 +26,34 @@
 	      (list q r nl)))))))
 
 (defun multiplication (m n)
-  (let ((doubles-list (double n (lambda (l) (> (first l) m)))))
-    (let ((res (reduce
-		(arithmetic-reducer
-		 (lambda (acc curr) (let ((q (first acc)) (m (first curr))) (>= q m)))
-		 (lambda (q curr) (let ((m (first curr))) (- q m)))
-		 (lambda (r curr) (let ((v (second curr))) (+ r v))))
-		(reverse doubles-list)
-		:initial-value (list m 0 nil))))
-      (values (second res) (third res)))))
+  "Multiplication computes m x n, and returns iterations"
+  (when (and (naturalp m) (naturalp n))
+    (let ((doubles-list (double n (lambda (l) (> (first l) m)))))
+      (let ((res (reduce
+		  (arithmetic-reducer
+		   (lambda (acc curr) (let ((q (first acc)) (m (first curr))) (>= q m)))
+		   (lambda (q curr) (let ((m (first curr))) (- q m)))
+		   (lambda (r curr) (let ((v (second curr))) (+ r v))))
+		  (reverse doubles-list)
+		  :initial-value (list m 0 nil))))
+	(values (second res) (third res))))))
 
 (defun division (n d)
-  (let ((doubles-list (double d (lambda (l) (> (second l) n)))))
-    (let ((res
-	   (reduce
-	    (arithmetic-reducer
-	     (lambda (acc curr) (let ((r (second acc)) (v (second curr))) (>= r v)))
-	     (lambda (q curr) (let ((m (first curr))) (+ q m)))
-	     (lambda (r curr) (let ((v (second curr))) (- r v))))
-	    (reverse doubles-list)
-	    :initial-value (list 0 n nil))))
-      (values (list (first res) (second res)) (third res)))))
+  "Integer division of naturals n and d"
+  (when (and (naturalp n) (naturalp d))
+    (let ((doubles-list (double d (lambda (l) (> (second l) n)))))
+      (let ((res
+	     (reduce
+	      (arithmetic-reducer
+	       (lambda (acc curr) (let ((r (second acc)) (v (second curr))) (>= r v)))
+	       (lambda (q curr) (let ((m (first curr))) (+ q m)))
+	       (lambda (r curr) (let ((v (second curr))) (- r v))))
+	      (reverse doubles-list)
+	      :initial-value (list 0 n nil))))
+	(values (list (first res) (second res)) (third res))))))
 
 (defun factor-unit-fractions (r &optional (k 0))
+  "Factor rational r: 0 < r < 1 into unitary fractions"
   (when (and (> r 0) (<= r 1) (rationalp r))
     (let ((nk (ceiling 1 r))
           (kp (+ k 1)))
