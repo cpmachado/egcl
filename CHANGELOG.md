@@ -8,5 +8,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
 - First iteration of function to factor into egyptian expressions
 - First iteration of multiplication and division
